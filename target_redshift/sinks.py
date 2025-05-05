@@ -253,13 +253,13 @@ class RedshiftSink(SQLSink):
             raise ValueError(msg)
         object_keys = [
             key
-            for key, value in self.schema["properties"].items()
+            for key, value in self.conformed_schema["properties"].items()
             if "object" in value["type"] or "array" in value["type"]
         ]
         return [
             {
                 key: (json.dumps(value).replace("None", "") if key in object_keys else value)
-                for key, value in record.items()
+                for key, value in self.conform_record(record).items()
             }
             for record in records
         ]
